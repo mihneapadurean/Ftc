@@ -30,23 +30,34 @@ class TrixRobotManual extends TrixRobot {
             DcMotor[] motors = TrixRobot.getMotors();
 
             DcMotor pulley_motor = TrixRobot.getPulley_motor();
-            //pulley_motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+
+           moveMotorWithCm(32, pulley_motor, 0.4);
 
             double rear_left_power = g1.left_stick_y;
             int position = pulley_motor.getCurrentPosition();
-
-            pulley_motor.setPower(0.5);
 
             Telemetry telemetry = TrixRobot.getTelemetry();
 
             telemetry.addData("Encoder Position", position);
             telemetry.addData("Motor Speed", pulley_motor.getPower());
             telemetry.addData("Joystick", rear_left_power);
+            telemetry.addData("is busy: ", pulley_motor.isBusy());
             telemetry.update();
 
 
         }
+    }
+
+    private void moveMotorWithCm(double cm, DcMotor motor, double tgt_speed){
+        double ticksFor1Cm = 165.6;
+        double ticks = cm * ticksFor1Cm;
+        int intTicks = (int)(Math.ceil(ticks));
+        motor.setTargetPosition(intTicks);
+        motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motor.setPower(tgt_speed);
+
+
     }
 
 }
